@@ -1,0 +1,3 @@
+# Model
+
+LLM_MODEL = 'meta-llama/Meta-Llama-3.1-8B-Instruct'

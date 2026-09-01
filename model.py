@@ -1,6 +1,4 @@
-from transformers import AutoTokenizer
-from transformers import AutoModelForCausalLM
-from transformers import BitsAndBytesConfig
+from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 import torch
 
 # Quantize and tokenize model

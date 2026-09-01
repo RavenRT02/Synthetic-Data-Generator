@@ -4,22 +4,8 @@ import pandas as pd
 import gradio as gr
 import time
 
-from model import load_model
 from dataset_generator import generate_records
 
-# for Colab
-# from google.colab import userdata
-
-# for local
-# import os
-# hf_token = os.getenv("HF_TOKEN")
-
-
-# Wrapper function invoked by Gradio UI.
-# Measures total dataset generation time and prepares outputs.
-
-LLAMA = 'meta-llama/Meta-Llama-3.1-8B-Instruct'
-tokenizer, model = load_model(LLAMA)
 
 def gradio_generate(domain: str, description: str, count: int) -> tuple[str, pd.DataFrame, str]:
 

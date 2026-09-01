@@ -1,11 +1,8 @@
 import json
 import pandas as pd
 
-from prompts import get_system_prompt
-from prompts import get_user_prompt
-
-from utils import add_batch
-from utils import calculate_batch_size
+from prompts import get_system_prompt, get_user_prompt
+from utils import add_batch, calculate_batch_size
 
 
 # llm call
