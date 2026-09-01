@@ -1,4 +1,5 @@
 from huggingface_hub import login
+import pandas as pd
 
 import gradio as gr
 import time
@@ -20,7 +21,7 @@ from dataset_generator import generate_records
 LLAMA = 'meta-llama/Meta-Llama-3.1-8B-Instruct'
 tokenizer, model = load_model(LLAMA)
 
-def gradio_generate(domain: str, description: str, count: int):
+def gradio_generate(domain: str, description: str, count: int) -> tuple[str, pd.DataFrame, str]:
 
   print("GRADIO FUNCTION CALLED")
   print(domain)

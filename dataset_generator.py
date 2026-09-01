@@ -10,7 +10,7 @@ from utils import calculate_batch_size
 
 # llm call
 
-def generate_response(tokenizer, model, messages: list[dict], max_new_tokens=2048):
+def generate_response(tokenizer, model, messages: list[dict], max_new_tokens=2048) -> str:
   """
   applies chat template to the tokenizer and converts it into tensor using pytorch.
   places the tensor in gpu using .to(cuda).
@@ -25,12 +25,12 @@ def generate_response(tokenizer, model, messages: list[dict], max_new_tokens=204
   outputs = model.generate(inputs, max_new_tokens=max_new_tokens, temperature=0.7, do_sample=True)
 
   # Slicing removes the input prompt and keeps only newly generated tokens.
-  response =  tokenizer.decode(outputs[0][inputs.shape[-1]:], skip_special_tokens=True)
+  response =  tokenizer.decode(outputs[0][inputs.shape[-1]:], skip_special_tokens=True) # returns str
 
   del inputs
   del outputs
 
-  return response.strip()
+  return response.strip() # returns str , jason.loads(response) returns list[dict] so return type is str
 
 
 
@@ -80,7 +80,7 @@ def estimate_tokens_per_record(tokenizer, model, base_prompt: str) -> float:
 
 # Function that uses other helper functions to generate synthetic data records
 
-def generate_records(tokenizer, model, domain: str, description: str, count: int, max_output_tokens=2048):
+def generate_records(tokenizer, model, domain: str, description: str, count: int, max_output_tokens: int = 2048) -> tuple[pd.DataFrame, str]:
   """
   Repeadtedly calls the llm until it creates the required number of unique synthetic data
   or until the maximum attempts is crossed.

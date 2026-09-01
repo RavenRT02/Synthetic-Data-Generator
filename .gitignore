@@ -11,3 +11,9 @@ synthetic_data.csv
 # OS files
 .DS_Store
 Thumbs.db
+
+# virtual env
+.venv
+
+# secrets
+.env
