@@ -1,13 +1,13 @@
 import json
 import pandas as pd
-
 from prompts import get_system_prompt, get_user_prompt
 from utils import add_batch, calculate_batch_size
+from config import MAX_OUTPUT_TOKENS
 
 
 # llm call
 
-def generate_response(tokenizer, model, messages: list[dict], max_new_tokens=2048) -> str:
+def generate_response(tokenizer, model, messages: list[dict], max_new_tokens=MAX_OUTPUT_TOKENS) -> str:
   """
   applies chat template to the tokenizer and converts it into tensor using pytorch.
   places the tensor in gpu using .to(cuda).
@@ -77,7 +77,7 @@ def estimate_tokens_per_record(tokenizer, model, base_prompt: str) -> float:
 
 # Function that uses other helper functions to generate synthetic data records
 
-def generate_records(tokenizer, model, domain: str, description: str, count: int, max_output_tokens: int = 2048) -> tuple[pd.DataFrame, str]:
+def generate_records(tokenizer, model, domain: str, description: str, count: int, max_output_tokens: int = MAX_OUTPUT_TOKENS) -> tuple[pd.DataFrame, str]:
   """
   Repeadtedly calls the llm until it creates the required number of unique synthetic data
   or until the maximum attempts is crossed.

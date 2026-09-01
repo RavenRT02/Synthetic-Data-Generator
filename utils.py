@@ -1,4 +1,5 @@
 import json
+from config import MAX_OUTPUT_TOKENS, SAFETY_MARGIN
 
 # Find unique records
 
@@ -18,7 +19,7 @@ def add_batch(batch: list[dict], records: list, unique_keys: set[str]) -> None:
 
 # calculate batch size
 
-def calculate_batch_size(avg_tokens_per_record: float, max_output_tokens: int = 2048, safety_margin: int = 200) -> int:
+def calculate_batch_size(avg_tokens_per_record: float, max_output_tokens: int = MAX_OUTPUT_TOKENS, safety_margin: int = SAFETY_MARGIN) -> int:
   """
   calculates available tokens after negating safety_margin to account estimate inconsistencies.
   Find batch size to safely generate responses in batches efficiently.
