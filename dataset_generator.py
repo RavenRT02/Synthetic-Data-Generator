@@ -2,7 +2,7 @@ import json
 import pandas as pd
 from prompts import get_system_prompt, get_user_prompt
 from utils import add_batch, calculate_batch_size
-from config import MAX_OUTPUT_TOKENS
+from config import MAX_OUTPUT_TOKENS, TEMPERATURE
 
 
 # llm call
@@ -19,7 +19,7 @@ def generate_response(tokenizer, model, messages: list[dict], max_new_tokens=MAX
   inputs = tokenizer.apply_chat_template(messages=messages, return_tensors="pt", add_generation_prompt=True).to("cuda")
 
   # Generate stochastic outputs using temperature sampling.
-  outputs = model.generate(inputs, max_new_tokens=max_new_tokens, temperature=0.7, do_sample=True)
+  outputs = model.generate(inputs, max_new_tokens=max_new_tokens, temperature=TEMPERATURE, do_sample=True)
 
   # Slicing removes the input prompt and keeps only newly generated tokens.
   response =  tokenizer.decode(outputs[0][inputs.shape[-1]:], skip_special_tokens=True) # returns str
