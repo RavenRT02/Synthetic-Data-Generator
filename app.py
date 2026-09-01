@@ -20,7 +20,7 @@ from dataset_generator import generate_records
 LLAMA = 'meta-llama/Meta-Llama-3.1-8B-Instruct'
 tokenizer, model = load_model(LLAMA)
 
-def gradio_generate(domain, description, count):
+def gradio_generate(domain: str, description: str, count: int):
 
   print("GRADIO FUNCTION CALLED")
   print(domain)

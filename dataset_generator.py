@@ -10,7 +10,7 @@ from utils import calculate_batch_size
 
 # llm call
 
-def generate_response(tokenizer, model, messages, max_new_tokens=2048):
+def generate_response(tokenizer, model, messages: list[dict], max_new_tokens=2048):
   """
   applies chat template to the tokenizer and converts it into tensor using pytorch.
   places the tensor in gpu using .to(cuda).
@@ -19,20 +19,26 @@ def generate_response(tokenizer, model, messages, max_new_tokens=2048):
   skip special tokens like <eos> in output and return output
   """
 
-  inputs = tokenizer.apply_chat_template(messages, return_tensors="pt", add_generation_prompt=True).to("cuda")
+  inputs = tokenizer.apply_chat_template(messages=messages, return_tensors="pt", add_generation_prompt=True).to("cuda")
 
   # Generate stochastic outputs using temperature sampling.
   outputs = model.generate(inputs, max_new_tokens=max_new_tokens, temperature=0.7, do_sample=True)
 
   # Slicing removes the input prompt and keeps only newly generated tokens.
-  return tokenizer.decode(outputs[0][inputs.shape[-1]:], skip_special_tokens=True)
+  response =  tokenizer.decode(outputs[0][inputs.shape[-1]:], skip_special_tokens=True)
+
+  del inputs
+  del outputs
+
+  return response.strip()
+
 
 
 # estimate tokens for 1 record to calculate batch size
 # Generate a small sample first to estimate average tokens per record.
 # This helps dynamically decide how many records can fit into one inference call.
 
-def estimate_tokens_per_record(tokennizer, model, base_prompt):
+def estimate_tokens_per_record(tokenizer, model, base_prompt: str) -> float:
   """
   Generate small set of sample records to calculate the output tokens for 1 record
   """
@@ -49,7 +55,7 @@ def estimate_tokens_per_record(tokennizer, model, base_prompt):
       "role":"user", "content":sample_prompt
   }]
 
-  response = generate_response(tokenizer, model, messages, max_new_tokens=1024)
+  response = generate_response(tokenizer, model, messages=messages, max_new_tokens=1024)
   print(response)
 
   try:
@@ -74,7 +80,7 @@ def estimate_tokens_per_record(tokennizer, model, base_prompt):
 
 # Function that uses other helper functions to generate synthetic data records
 
-def generate_records(tokenizer, model,domain, description, count, max_output_tokens=2048):
+def generate_records(tokenizer, model, domain: str, description: str, count: int, max_output_tokens=2048):
   """
   Repeadtedly calls the llm until it creates the required number of unique synthetic data
   or until the maximum attempts is crossed.
@@ -85,9 +91,9 @@ def generate_records(tokenizer, model,domain, description, count, max_output_tok
   # Hash each dictionary as a JSON string to efficiently detect duplicates.
   unique_keys = set()
 
-  avg_tokens = estimate_tokens_per_record(tokenizer, model, description)
+  avg_tokens = estimate_tokens_per_record(tokenizer, model, base_prompt=description)
 
-  batch_limit = calculate_batch_size(avg_tokens, max_output_tokens=max_output_tokens)
+  batch_limit = calculate_batch_size(avg_tokens_per_record=avg_tokens, max_output_tokens=max_output_tokens)
 
   print(f"Estimated tokens/record={avg_tokens:.1f}, "
         f"batch_size={batch_limit}")
@@ -104,11 +110,11 @@ def generate_records(tokenizer, model,domain, description, count, max_output_tok
     batch_size = min(remaining, batch_limit) 
 
     messages = [
-        {"role":"system", "content": get_system_prompt(batch_size)},
-        {"role":"user", "content": get_user_prompt(domain, description)}
+        {"role":"system", "content": get_system_prompt(batch_size=batch_size)},
+        {"role":"user", "content": get_user_prompt(domain=domain, description=description)}
     ]
 
-    response = generate_response(tokenizer, model, messages, max_new_tokens=max_output_tokens)
+    response = generate_response(tokenizer, model, messages=messages, max_new_tokens=max_output_tokens)
 
     try:
       batch = json.loads(response)
@@ -123,7 +129,7 @@ def generate_records(tokenizer, model,domain, description, count, max_output_tok
           print("Empty batch, retrying...")
           continue
 
-      add_batch(batch, records, unique_keys)
+      add_batch(batch=batch, records=records, unique_keys=unique_keys)
       print(f'collected {len(records)}/{count} unique records')
       attempts+=1
 

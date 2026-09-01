@@ -1,4 +1,4 @@
-def get_system_prompt(batch_size):
+def get_system_prompt(batch_size: int) -> str:
 
   system_prompt = f"""
   You are a synthetic data generator.
@@ -33,7 +33,7 @@ def get_system_prompt(batch_size):
 
   return system_prompt
 
-def get_user_prompt(domain, description):
+def get_user_prompt(domain: str, description: str) -> str:
   user_prompt = f"""
   generate data in {domain} following : {description}.
   """

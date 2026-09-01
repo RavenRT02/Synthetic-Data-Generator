@@ -2,7 +2,7 @@ import json
 
 # Find unique records
 
-def add_batch(batch, records, unique_keys):
+def add_batch(batch: list[dict], records: dict, unique_keys: set):
   """
   Find duplicate dictionaries in batch list.
   Append only unique dictionaries / records from the batch.
@@ -18,7 +18,7 @@ def add_batch(batch, records, unique_keys):
 
 # calculate batch size
 
-def calculate_batch_size(avg_tokens_per_record, max_output_tokens=2048, safety_margin=200):
+def calculate_batch_size(avg_tokens_per_record: float, max_output_tokens=2048, safety_margin=200) -> int:
   """
   calculates available tokens after negating safety_margin to account estimate inconsistencies.
   Find batch size to safely generate responses in batches efficiently.
