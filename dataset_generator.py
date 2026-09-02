@@ -35,7 +35,7 @@ def generate_response(tokenizer, model, messages: list[dict], max_new_tokens=MAX
 # Generate a small sample first to estimate average tokens per record.
 # This helps dynamically decide how many records can fit into one inference call.
 
-def estimate_tokens_per_record(tokenizer, model, base_prompt: str) -> float:
+def estimate_tokens_per_record(llm, base_prompt: str) -> float:
   """
   Generate small set of sample records to calculate the output tokens for 1 record
   """
@@ -52,8 +52,7 @@ def estimate_tokens_per_record(tokenizer, model, base_prompt: str) -> float:
       "role":"user", "content":sample_prompt
   }]
 
-  response = generate_response(tokenizer, model, messages=messages, max_new_tokens=1024)
-  print(response)
+  response, output_tokens = llm.generate(messages=messages)
 
   try:
     data = json.loads(response)
@@ -63,11 +62,7 @@ def estimate_tokens_per_record(tokenizer, model, base_prompt: str) -> float:
     if not isinstance(data, list) or len(data) == 0:
       return 100
 
-    output_tokens = len(tokenizer.encode(response))
     return max(1, output_tokens/len(data))
-
-  #except Exception:
-    #return 100
 
   except Exception as e:
     print("ERROR:", e)
@@ -88,7 +83,7 @@ def generate_records(llm, domain: str, description: str, count: int, max_output_
   # Hash each dictionary as a JSON string to efficiently detect duplicates.
   unique_keys = set()
 
-  avg_tokens = estimate_tokens_per_record(tokenizer, model, base_prompt=description)
+  avg_tokens = estimate_tokens_per_record(llm=llm, base_prompt=description)
 
   batch_limit = calculate_batch_size(avg_tokens_per_record=avg_tokens, max_output_tokens=max_output_tokens)
 
@@ -111,7 +106,7 @@ def generate_records(llm, domain: str, description: str, count: int, max_output_
         {"role":"user", "content": get_user_prompt(domain=domain, description=description)}
     ]
 
-    response = llm.generate(messages=messages)
+    response, _ = llm.generate(messages=messages)  # ignoring output_tokens with _
 
     try:
       batch = json.loads(response)

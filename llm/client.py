@@ -1,9 +1,9 @@
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
-from auth import login_huggingface
+from llm.auth import login_huggingface
 from config import LLM_MODEL, LLM_PROVIDER, BASE_URL
-from model import load_model
+from llm.model import load_model
 from dataset_generator import generate_response
 
 
@@ -19,9 +19,19 @@ class LocalLLM:
         self.tokenizer, self.model = load_model(model_name=model_name)
 
 
+    def count_tokens(self, text: str) -> int:
+        """
+        Provides total tokens used to generate the response - used to calculate average tokens and batch size
+        """
+        return len(self.tokenizer.encode(text))
+
+
     def generate(self, messages: list[dict]) -> str:
 
-        return generate_response(tokenizer=self.tokenizer, model=self.model, messages=messages)
+        response =  generate_response(tokenizer=self.tokenizer, model=self.model, messages=messages)
+        token_count = self.count_tokens(response)
+
+        return response, token_count
 
 
 
@@ -41,7 +51,17 @@ class APIClient:
 
         response = self.client.chat.completions.create(model=self.model_name, messages=messages)
 
-        return response.choices[0].message.content.strip()
+        text = response.choices[0].message.content.strip()
+
+        if response.usage is not None:
+            token_count = response.usage.completion_tokens
+        else:
+            # Fallback becausse providers not compatible with openai usage may not provide tokens used
+            # len(text) // 4 -- since approx 4 charc form a token
+            token_count = max(1, len(text)//4)
+
+        return text, token_count
+
 
 
 
