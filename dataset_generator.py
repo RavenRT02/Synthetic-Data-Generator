@@ -32,7 +32,7 @@ def generate_response(tokenizer, model, messages, max_new_tokens=2048):
 # Generate a small sample first to estimate average tokens per record.
 # This helps dynamically decide how many records can fit into one inference call.
 
-def estimate_tokens_per_record(tokennizer, model, base_prompt):
+def estimate_tokens_per_record(tokenizer, model, base_prompt):
   """
   Generate small set of sample records to calculate the output tokens for 1 record
   """
