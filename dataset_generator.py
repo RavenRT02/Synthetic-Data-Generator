@@ -16,7 +16,8 @@ def generate_response(tokenizer, model, messages: list[dict], max_new_tokens=MAX
   skip special tokens like <eos> in output and return output
   """
 
-  inputs = tokenizer.apply_chat_template(messages=messages, return_tensors="pt", add_generation_prompt=True).to("cuda")
+  # do not messages=messages, this expects conversation parameter not messages
+  inputs = tokenizer.apply_chat_template(messages, return_tensors="pt", add_generation_prompt=True).to("cuda")
 
   # Generate stochastic outputs using temperature sampling.
   outputs = model.generate(inputs, max_new_tokens=max_new_tokens, temperature=TEMPERATURE, do_sample=True)
