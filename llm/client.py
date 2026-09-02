@@ -77,7 +77,7 @@ def load_llm():
     if LLM_PROVIDER == "api":
 
         load_dotenv()
-        api_key = os.get("LLM_API_KEY")
+        api_key = os.getenv("LLM_API_KEY")
 
         if not api_key:
             raise ValueError("API key not found. Set LLM_API_KEY in .env file.")
