@@ -77,7 +77,7 @@ def estimate_tokens_per_record(tokenizer, model, base_prompt: str) -> float:
 
 # Function that uses other helper functions to generate synthetic data records
 
-def generate_records(tokenizer, model, domain: str, description: str, count: int, max_output_tokens: int = MAX_OUTPUT_TOKENS) -> tuple[pd.DataFrame, str]:
+def generate_records(llm, domain: str, description: str, count: int, max_output_tokens: int = MAX_OUTPUT_TOKENS) -> tuple[pd.DataFrame, str]:
   """
   Repeadtedly calls the llm until it creates the required number of unique synthetic data
   or until the maximum attempts is crossed.
@@ -111,7 +111,7 @@ def generate_records(tokenizer, model, domain: str, description: str, count: int
         {"role":"user", "content": get_user_prompt(domain=domain, description=description)}
     ]
 
-    response = generate_response(tokenizer, model, messages=messages, max_new_tokens=max_output_tokens)
+    response = llm.generate(messages=messages)
 
     try:
       batch = json.loads(response)

@@ -6,7 +6,7 @@ from functools import partial
 
 
 # Button click function
-def on_generate(tokenizer, model, domain: str, description: str, count: int) -> tuple[str, pd.DataFrame, str]:
+def on_generate(llm, domain: str, description: str, count: int) -> tuple[str, pd.DataFrame, str]:
 
   print("GRADIO FUNCTION CALLED")
   print(domain)
@@ -15,9 +15,7 @@ def on_generate(tokenizer, model, domain: str, description: str, count: int) -> 
 
   start_time = time.time()
 
-  file_preview, csv_path = generate_records(
-      tokenizer=tokenizer, model=model,
-      domain=domain, description=description, count=int(count))
+  file_preview, csv_path = generate_records(llm=llm, domain=domain, description=description, count=int(count))
 
   elapsed = round((time.time() - start_time) / 60, 2)  # returns seconds so div by 60, 2 for decimal places.
 
@@ -31,7 +29,7 @@ def on_generate(tokenizer, model, domain: str, description: str, count: int) -> 
 
 
 # Gradio UI
-def create_ui(tokenizer, model) -> gr.Blocks:
+def create_ui(llm) -> gr.Blocks:
 
   with gr.Blocks(title="Synthetic Data Generator") as gradio_ui:
 
@@ -83,7 +81,7 @@ def create_ui(tokenizer, model) -> gr.Blocks:
         download_output = gr.File(label="Download CSV")
 
 
-    generate_fn = partial(on_generate, tokenizer, model)
+    generate_fn = partial(on_generate, llm)
 
     generate_button.click(
         fn=generate_fn,
