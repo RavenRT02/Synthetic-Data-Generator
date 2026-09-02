@@ -14,8 +14,8 @@ class LocalLLM:
     """
 
     def __init__(self, model_name: str):
-
-        login_huggingface()
+        # uncomment login_huggingface() only if Llama3.1 is being loaded on local machine instead of colab
+        # login_huggingface()            
         self.tokenizer, self.model = load_model(model_name=model_name)
 
 
