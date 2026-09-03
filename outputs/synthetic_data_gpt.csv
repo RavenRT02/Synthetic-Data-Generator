@@ -1,0 +1,26 @@
+patient_id,patient_name,patient_age,patient_gender,admission_reason
+P1001,Alice Johnson,45,Female,Pneumonia
+P1002,Brian Smith,32,Male,Fractured Arm
+P1003,Catherine Lee,58,Female,Diabetes Complications
+P1004,David Martinez,27,Male,Appendicitis
+P1005,Eva Thompson,36,Female,Asthma Attack
+P1006,Franklin Wright,63,Male,Heart Disease
+P1007,Grace Kim,22,Female,Migraine
+P1008,Hassan Ali,50,Male,Stroke
+P1009,Isabella Garcia,29,Female,Severe Allergic Reaction
+P1010,James Anderson,41,Male,Kidney Stone
+P1011,Karen Brown,34,Female,Gallbladder Surgery
+P1012,Liam Clark,47,Male,High Blood Pressure
+P1013,Monica Lopez,39,Female,Bronchitis
+P1014,Nathan Scott,28,Male,Sprained Ankle
+P1015,Olivia Evans,55,Female,Hip Replacement
+P1016,Paul Harris,60,Male,Chronic Obstructive Pulmonary Disease
+P1017,Quinn Martinez,25,Female,Concussion
+P1018,Rachel Moore,33,Female,Urinary Tract Infection
+P1019,Samuel Thompson,44,Male,Diabetic Ketoacidosis
+P1020,Tina Walker,52,Female,Liver Cirrhosis
+P1021,Umar Khan,37,Male,Pancreatitis
+P1022,Victoria Perez,43,Female,Thyroid Disorder
+P1023,William Jenkins,49,Male,Back Pain
+P1024,Ximena Rivera,31,Female,Preeclampsia
+P1025,Yusuf Ali,40,Male,Sepsis

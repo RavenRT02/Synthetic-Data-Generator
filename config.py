@@ -12,7 +12,7 @@ BASE_URL = None
 
 # LLM_PROVIDER = "api"
 # LLM_MODEL = "gemini-3.6-flash"
-# BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
+# BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"            
 
 
 # Token constants

@@ -1,171 +1,301 @@
-# Synthetic Dataset Generator using Llama 3.1 8B
+# Synthetic Data Generator
 
-Generate structured synthetic datasets from natural language descriptions using Meta-Llama-3.1-8B-Instruct with 4-bit quantization and a Gradio interface.
+Generate structured synthetic datasets from natural language descriptions using local and API-based Large Language Models (LLMs) through a unified interface.
 
 ---
 
 ## Overview
 
-This project uses **Meta-Llama-3.1-8B-Instruct** to create structured synthetic datasets based on user requirements.
+This project generates structured synthetic datasets from natural language descriptions.
 
 Users specify:
 
-* Domain (Healthcare, Finance, Education, Corporate, etc.)
-* Dataset description
-* Number of records
+- Domain
+- Dataset description
+- Number of records
 
-The application dynamically estimates output token usage, calculates an optimal batch size, repeatedly queries the model, removes duplicate records, validates JSON responses, and exports the final dataset as a CSV file.
+The application constructs prompts, estimates token usage, calculates an appropriate batch size, repeatedly queries the selected LLM, validates JSON responses, removes duplicate records, and exports the final dataset as a CSV file.
 
-The project was developed and tested on **Google Colab Free Tier (T4 GPU)**.
+The project supports both **local Hugging Face models** and **OpenAI-compatible API providers**.
+
+Currently tested models include:
+
+- Meta-Llama-3.1-8B-Instruct
+- GPT-4.1-mini
+- Gemini 3.6 Flash
+
+The project was originally developed and tested on **Google Colab Free Tier with an NVIDIA T4 GPU** for local Llama inference.
 
 ---
 
 ## Features
 
-* Meta-Llama-3.1-8B-Instruct inference
-* 4-bit quantization using BitsAndBytes
-* Automatic token estimation
-* Dynamic batch-size calculation
-* JSON-only generation
-* Duplicate record removal
-* Retry mechanism for invalid outputs
-* CSV export
-* Gradio web interface
-* Dataset preview before download
+- Multiple LLM support
+- Local Hugging Face model inference
+- OpenAI-compatible API support
+- 4-bit quantization for local Llama inference
+- Automatic token estimation
+- Dynamic batch-size calculation
+- JSON-only generation
+- Duplicate record removal
+- Retry mechanism for invalid outputs
+- CSV export
+- Gradio web interface
+- Dataset preview before download
+- Provider-independent dataset generation logic
 
 ---
 
 ## Architecture
 
-```
+```text
 User Input
      ↓
 Gradio UI
      ↓
 Prompt Construction
      ↓
-Token Estimation
+Dataset Generator
      ↓
-Batch Size Calculation
+LLM Abstraction
      ↓
-Llama 3.1 8B Inference
-     ↓
-JSON Validation
-     ↓
-Duplicate Removal
-     ↓
-Collect Unique Records
-     ↓
-Pandas DataFrame
-     ↓
-CSV Export
+ ┌───────────────┬───────────────────────┐
+ │               │                       │
+ ▼               ▼                       ▼
+Local LLM    OpenAI-compatible API   Other Compatible APIs
+ │               │
+ ▼               ▼
+Llama 3.1     GPT / Gemini / DeepSeek
+ │
+ └───────────────┬───────────────────────┘
+                 ↓
+          JSON Validation
+                 ↓
+          Duplicate Removal
+                 ↓
+        Collect Unique Records
+                 ↓
+          Pandas DataFrame
+                 ↓
+             CSV Export
+```
+
+---
+
+## Project Structure
+
+```text
+Synthetic-Data-Generator/
+│
+├── app.py
+├── colab_app.ipynb
+├── config.py
+├── dataset_generator.py
+├── prompts.py
+├── requirements.txt
+├── ui.py
+├── utils.py
+│
+├── llm/
+│   ├── auth.py
+│   ├── client.py
+│   └── model.py
+│
+├── outputs/
+│   ├── synthetic_dataset_llama.csv
+│   ├── synthetic_dataset_gpt.csv
+│   └── synthetic_dataset_gemini.csv
+│
+├── assets/
+│   ├── ui.png
+│   ├── generating_dataset.png
+│   ├── dataset_preview.png
+│   └── backend_flow.png
+│
+├── .gitignore
+├── LICENSE
+└── README.md
 ```
 
 ---
 
 ## Tech Stack
 
-* Python
-* Transformers
-* Hugging Face
-* Meta-Llama-3.1-8B-Instruct
-* BitsAndBytes
-* PyTorch
-* Pandas
-* Gradio
-* Google Colab
+- Python
+- PyTorch
+- Transformers
+- Hugging Face
+- BitsAndBytes
+- Pandas
+- Gradio
+- OpenAI Python SDK
+- Google Colab
 
 ---
 
-## Model
+# Models
 
-Model used:
+The project supports two types of model backends.
 
-```
+### Local Model
+
+The project can run:
+
+```text
 meta-llama/Meta-Llama-3.1-8B-Instruct
 ```
 
-The model is loaded in **4-bit NF4 quantized format** to reduce GPU memory requirements.
+The model is loaded using **4-bit NF4 quantization** to reduce GPU memory requirements.
+
+### API Models
+
+The project also supports models exposed through OpenAI-compatible APIs.
+
+Currently tested:
+
+```text
+GPT-4.1-mini
+Gemini 3.6 Flash
+```
+
+The same API abstraction can also be used with other compatible providers.
 
 ---
 
-## System Requirements
+# Selecting a Model
 
-### Tested Environment
+Model selection is handled through `config.py`.
 
-Google Colab Free Tier 
+To switch between models, **comment out the configuration for the model you are not using and uncomment the configuration for the model you want to use.**
 
-GPU:
+Only one provider/model configuration should be active at a time.
 
-* NVIDIA T4
-* 15 GB VRAM
+### Local Llama 3.1
 
-System RAM:
+```python
+LLM_PROVIDER = "local"
+LLM_MODEL = "meta-llama/Meta-Llama-3.1-8B-Instruct"
+```
 
-* 12.7 GB
+### GPT-4.1-mini
 
-Storage:
+```python
+# LLM_PROVIDER = "api"
+# LLM_MODEL = "gpt-4.1-mini"
+# BASE_URL = "https://api.openai.com/v1"
+```
 
-* 112.6 GB temporary storage
+Uncomment the API configuration when using OpenAI.
 
-Python:
+### Gemini 3.6 Flash
 
-* 3.11+
+```python
+# LLM_PROVIDER = "api"
+# LLM_MODEL = "gemini-3.6-flash"
+# BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
+```
+
+Uncomment the API configuration when using Gemini.
 
 ---
 
-## Installation
+# System Requirements
 
-Install dependencies:
+## Local Llama Inference
+
+The local model was tested using:
+
+- Google Colab Free Tier
+- NVIDIA T4 GPU
+- 15 GB VRAM
+- Approximately 12.7 GB system RAM
+- Python 3.11+
+
+The local Llama model requires significantly more resources than the API-based models.
+
+API models do not require a local GPU because inference is performed by the respective provider.
+
+---
+
+# Installation
+
+Clone the repository:
 
 ```bash
-pip install bitsandbytes accelerate transformers==4.57.6 torch pandas gradio huggingface_hub
+git clone https://github.com/RavenRT02/Synthetic-Data-Generator.git
+cd Synthetic-Data-Generator
+```
+
+Install the required dependencies:
+
+```bash
+pip install -r requirements.txt
 ```
 
 ---
 
-## Access to Llama 3.1
+# Access to Llama 3.1
 
-Before running the project:
+This section is required only when using the local Llama model.
 
 ### 1. Create a Hugging Face account
 
-https://huggingface.co
+Create an account on Hugging Face.
 
 ### 2. Request access to Meta-Llama-3.1-8B-Instruct
 
+Visit the model page:
+
+```text
 https://huggingface.co/meta-llama/Meta-Llama-3.1-8B-Instruct
-
-You must:
-
-* Accept Meta's license agreement.
-* Wait for access approval.
-
-### 3. Generate a Hugging Face access token with write permission
-
-Settings → Access Tokens → +Create new token button → Token type: write
-
-### 4. Store the token
-
-For Google Colab:
-
-```
-HF_TOKEN
 ```
 
-The notebook reads the token from:
+You must accept Meta's applicable license agreement and obtain access to the model.
+
+### 3. Create a Hugging Face access token
+
+Create a Hugging Face access token with the required permissions.
+
+### 4. Authenticate
+
+For Google Colab, the notebook retrieves the Hugging Face token from Colab Secrets:
 
 ```python
-userdata.get('HF_TOKEN')
+from google.colab import userdata
+from llm.auth import login_huggingface
+
+login_huggingface(userdata.get("HF_TOKEN"))
 ```
 
 ---
 
-## Running the Project
+# Running the Project
 
-```python
-gradio_ui.launch()
+The main entry point is:
+
+```text
+app.py
 ```
+
+Run:
+
+```bash
+python app.py
+```
+
+The application launches the Gradio interface in the browser.
+
+For Google Colab, use:
+
+```text
+colab_app.ipynb
+```
+
+The notebook clones the repository, installs the dependencies, authenticates with Hugging Face, and starts the application.
+
+---
+
+# Using the Interface
 
 Open the Gradio interface and provide:
 
@@ -173,38 +303,72 @@ Open the Gradio interface and provide:
 
 Examples:
 
-* Healthcare
-* Finance
-* Education
-* Retail
-* Human Resources
+- Healthcare
+- Finance
+- Education
+- Retail
+- Human Resources
+- Corporate
 
 ### Dataset Description
 
-Example:
-
-```
-Generate employee records with:
-
-name
-age
-salary
-department
-joining_date
-```
+Describe the structure and information you want in the generated dataset.
 
 ### Record Count
 
-Supported values:
+Choose the required number of records from the available options in the interface.
 
-* 25
-* 50
-* 75
-* 100
-* 125
-* 150
-* 175
-* 200
+---
+
+# Example: Healthcare Patient Dataset
+
+The three example datasets in the `outputs/` folder were generated using the **same prompt** so that the outputs from different models can be compared.
+
+### Domain
+
+```text
+Healthcare
+```
+
+### Description
+
+```text
+Generate patient records with the following fields:
+
+patient_id
+name
+age
+gender
+admission_reason
+```
+
+The same healthcare/patient generation task was run using:
+
+```text
+Llama 3.1 8B
+GPT-4.1-mini
+Gemini 3.6 Flash
+```
+
+### Compare the Outputs
+
+The generated CSV files are available in:
+
+```text
+outputs/
+```
+
+Look at the following files to compare how the different models handled the same prompt:
+
+```text
+outputs/synthetic_dataset_llama.csv
+outputs/synthetic_dataset_gpt.csv
+outputs/synthetic_dataset_gemini.csv
+```
+
+These files are provided as example outputs from the project.
+
+> **Note:** The generated patient information is synthetic and fictional. It should not be treated as real medical data.
 
 ---
 
@@ -228,112 +392,120 @@ Supported values:
 
 ---
 
-## Future Improvements
+# Internal Workflow
 
-* Multiple model support
-* Audio dataset generation
-* JSON and Excel export
+## Prompt Construction
 
----
+The application constructs a system prompt and user prompt from the domain and dataset description provided through the UI.
 
-## Sample Output
+The model is instructed to return the requested records as a JSON array.
 
-Input:
+## Token Estimation
 
-Domain:
+Before generating the requested dataset, the application performs a small generation to estimate the average number of output tokens produced per record.
 
-```
-Corporate
-```
+The token-counting implementation is handled by the selected LLM backend.
 
-Description:
+## Batch Size Calculation
 
-```
-Generate employee records containing:
-name
-age
-department
-salary
-joining_date
-```
+The estimated tokens per record are used to calculate an appropriate batch size within the available output-token budget.
 
-Output:
+This allows the application to generate datasets in multiple batches rather than attempting to generate the entire dataset in a single request.
 
-| name    | age | department | salary | joining_date |
-| ------- | --- | ---------- | ------ | ------------ |
-| Amanda  | 28  | HR         | 45000  | 2018-09-01   |
-| Kevin   | 25  | IT         | 50000  | 2019-01-15   |
-| Wilfred | 27  | Finance    | 65000  | 2015-03-20   |
+## JSON Validation
 
-The generated dataset is exported as:
+The generated response is parsed as JSON.
 
-```
+Only valid JSON arrays containing records are accepted.
+
+Invalid responses trigger automatic retries.
+
+## Duplicate Removal
+
+Generated records are checked for duplicates before being added to the final dataset.
+
+A set of unique record keys is used to prevent duplicate records from being included in the final output.
+
+## Export
+
+Once the requested number of unique records has been generated, the records are converted into a Pandas DataFrame and exported as:
+
+```text
 synthetic_data.csv
 ```
 
-A sample CSV generated by the application is included in:
+---
+
+# LLM Abstraction
+
+The project separates dataset-generation logic from the underlying model provider.
+
+The `llm/` package contains:
 
 ```text
-outputs/sample_dataset.csv
+llm/
+├── auth.py
+├── client.py
+└── model.py
 ```
 
-You can inspect the file to see the structure of generated synthetic records.
+### `client.py`
+
+Provides the common LLM interface and supports:
+
+- Local model inference
+- OpenAI-compatible API inference
+
+The dataset generator interacts with the LLM through a common `generate()` interface rather than directly interacting with a specific model or provider.
+
+This allows the dataset-generation logic to remain independent of the underlying LLM.
+
+### `model.py`
+
+Handles loading and configuration of the local Hugging Face model.
+
+### `auth.py`
+
+Handles Hugging Face authentication.
 
 ---
 
-## Internal Workflow
+# Limitations
 
-### Token Estimation
-
-The model first generates a small sample to estimate average tokens per record.
-
-### Batch Size Calculation
-
-The available output token budget is used to determine the number of records that can safely be generated in one inference call.
-
-### JSON Validation
-
-Only valid JSON arrays are accepted.
-
-Invalid outputs trigger automatic retries.
-
-### Duplicate Removal
-
-Records are hashed and stored inside a set to ensure uniqueness.
-
-### Export
-
-Final records are converted to a Pandas DataFrame and exported to CSV.
-
-### Backend Flow
-
-![Workflow](assets/backend_flow.png)
+- Generation quality depends on the selected model and prompt quality.
+- LLM responses may occasionally contain invalid JSON.
+- Large datasets increase generation time and API usage.
+- Duplicate values may require additional generation attempts.
+- API models require valid provider credentials and may incur usage costs.
+- Local Llama inference requires a compatible GPU with sufficient VRAM.
 
 ---
 
+# Future Improvements
 
-## Limitations
-
-* Generation quality depends on prompt quality.
-* LLM responses may occasionally contain invalid JSON.
-* Large datasets increase generation time.
-* Duplicate values may require additional retries.
+- Additional model/provider integrations
+- Audio dataset generation
+- JSON and Excel export
+- Further validation of generated records
+- Additional dataset schemas and generation controls
 
 ---
 
-## License
+# License
 
 This repository contains code licensed under the MIT License.
 
 The Meta-Llama-3.1 model itself is subject to Meta's Llama 3.1 Community License.
 
-See:
+For Llama model access and licensing information, refer to the model's Hugging Face page:
 
+```text
 https://huggingface.co/meta-llama/Meta-Llama-3.1-8B-Instruct
+```
 
 ---
 
-## Author
+# Author
 
 Praveen Kumar T
 

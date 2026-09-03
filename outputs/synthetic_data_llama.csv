@@ -1,0 +1,26 @@
+patient_id,patient_name,patient_age,patient_gender,admission_reason
+1001,Emma Taylor,42,Female,Chronic back pain
+1002,David Lee,61,Male,Heart condition
+1003,Sophia Patel,28,Female,Gastrointestinal issues
+1004,Robert White,49,Male,Respiratory problems
+1005,Ava Martin,35,Female,Neurological issues
+1006,William Brown,67,Male,Cancer treatment
+1007,Isabella Davis,22,Female,Injury from accident
+1008,James Wilson,54,Male,Kidney transplant
+1009,Charlotte Jenkins,31,Female,Psychiatric issues
+1010,Michael Thompson,48,Male,Orthopedic issues
+1011,Olivia Garcia,39,Female,Cardiovascular disease
+1012,Daniel Brooks,59,Male,Respiratory failure
+1013,Abigail Russell,46,Female,Neurological disorders
+1014,Christopher Hall,63,Male,Cancer treatment
+1015,Evelyn Walker,41,Female,Kidney disease
+1016,Alexander Rodriguez,52,Male,Heart attack
+1017,Mia Kim,29,Female,Gastrointestinal issues
+1018,Joseph Harris,66,Male,Stroke
+1019,Emily Taylor,38,Female,Cancer treatment
+1020,Patrick Martin,44,Male,Respiratory problems
+1021,Gabriella Lee,26,Female,Neurological issues
+1022,Kevin White,58,Male,Cardiovascular disease
+1023,Samantha Brown,33,Female,Injury from accident
+1024,Joshua Davis,51,Male,Kidney transplant
+1025,Kayla Jenkins,36,Female,Psychiatric issues
