@@ -1,0 +1,26 @@
+patient_id,patient_name,patient_age,patient_gender,admission_reason
+PAT-1001,Eleanor Vance,68,Female,Bacterial Pneumonia
+PAT-1002,Marcus Brody,42,Male,Acute Appendicitis
+PAT-1003,Sophia Chen,29,Female,Severe Migraine with Aura
+PAT-1004,James Wilson,55,Male,Chest Pain and Angina
+PAT-1005,Maria Garcia,34,Female,Fractured Femur
+PAT-1006,David Kim,71,Male,Congestive Heart Failure
+PAT-1007,Aisha Khan,19,Female,Acute Gastroenteritis
+PAT-1008,Robert Taylor,63,Male,Diabetic Ketoacidosis
+PAT-1009,Emily Davis,45,Female,Acute Cholecystitis
+PAT-1010,Michael Brown,50,Male,Renal Calculi
+PAT-1011,Sarah Jenkins,38,Female,Asthma Exacerbation
+PAT-1012,William Martinez,82,Male,Ischemic Stroke
+PAT-1013,Olivia Johnson,24,Female,Blunt Force Trauma
+PAT-1014,Daniel Lee,31,Male,Anaphylactic Shock
+PAT-1015,Grace Smith,76,Female,Post-operative Infection
+PAT-1016,Christopher Harris,48,Male,Acute Diverticulitis
+PAT-1017,Chloe Lewis,12,Female,Febrile Seizure
+PAT-1018,Anthony Clark,60,Male,COPD Exacerbation
+PAT-1019,Hannah Walker,27,Female,Ectopic Pregnancy
+PAT-1020,Matthew Robinson,39,Male,Severe Clinical Depression
+PAT-1021,Isabella Hall,5,Female,Acute Bronchiolitis
+PAT-1022,Andrew Young,53,Male,Sepsis Secondary to UTI
+PAT-1023,Mia Allen,64,Female,Hypertensive Crisis
+PAT-1024,Joshua Wright,36,Male,Second-Degree Burns
+PAT-84920,Eleanor Vance,62,Female,Acute appendicitis and abdominal pain
